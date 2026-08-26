@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kea — Process-mining analytics</title>
+<meta name="description" content="Kea turns your raw event logs into a map of how work actually flows — so you can see the bottlenecks, rework, and delays quietly draining your operation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/kea_k_logo.png">
+<style>
+  /* ---- theme knobs (design props: accent=Balanced, corners=Rounded, motion=Lively) ---- */
+  :root {
+    --kea-cta-bg: #e95423;
+    --kea-cta-bg-hover: #d4471c;
+    --kea-cta-shadow: rgba(233,84,35,.3);
+    --kea-pill-bg: #ebf0e0;
+    --kea-pill-fg: #3e5621;
+    --kea-radius: 6px;
+    --kea-card-radius: 14px;
+    --kea-play: running;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: "Open Sans", sans-serif; color: #333; background: #ffffff; -webkit-font-smoothing: antialiased; }
+  a { text-decoration: none; color: inherit; }
+  img { max-width: 100%; }
+
+  @keyframes keafloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  @keyframes keaband { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @keyframes keaflash { 0%,100% { box-shadow: 0 0 0 0 rgba(233,84,35,.4); } 50% { box-shadow: 0 0 0 9px rgba(233,84,35,0); } }
+
+  /* ---- hover states ---- */
+  .nav-link { transition: color .2s; }
+  .nav-link:hover { color: #3f86e0; }
+
+  .btn-cta { transition: background .2s, transform .2s; }
+  .btn-cta:hover { background: var(--kea-cta-bg-hover); }
+  .btn-cta-lift:hover { transform: translateY(-2px); }
+  .btn-cta-nudge:hover { transform: translateY(-1px); }
+
+  .btn-ghost { transition: background .2s, border-color .2s; }
+  .btn-ghost:hover { background: #ebf0e0; border-color: #5c7d33; }
+
+  .btn-ghost-light { transition: background .2s, border-color .2s; }
+  .btn-ghost-light:hover { background: rgba(255,255,255,.1); border-color: #fff; }
+
+  .feature-card { transition: transform .2s, box-shadow .2s; }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(58,70,30,.1); }
+
+  .footer-link { transition: color .2s; }
+  .footer-link:hover { color: #a4cd78; }
+  .footer-legal-link { transition: color .2s; }
+  .footer-legal-link:hover { color: #cfcfca; }
+
+  /* ---- responsive nav (breakpoint 880px) ---- */
+  .nav-desktop { display: flex; align-items: center; gap: 34px; }
+  .nav-toggle { display: none; }
+  .nav-mobile { display: none; border-top: 1px solid #eceae5; background: #fff; padding: 14px 28px 22px; flex-direction: column; gap: 4px; }
+  #nav-check { display: none; }
+  #nav-check:checked ~ .nav-mobile { display: flex; }
+
+  @media (max-width: 879px) {
+    .nav-desktop { display: none; }
+    .nav-toggle {
+      display: inline-flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px;
+      width: 44px; height: 44px; background: transparent; border: 1px solid #e3e1db; border-radius: 8px; cursor: pointer;
+    }
+    .nav-toggle span { display: block; width: 20px; height: 2px; background: #3e5621; border-radius: 2px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root { --kea-play: paused; }
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid #eceae5;">
+    <input type="checkbox" id="nav-check">
+    <div style="max-width:1180px;margin:0 auto;padding:0 28px;height:74px;display:flex;align-items:center;justify-content:space-between;gap:20px;">
+      <a href="#top" style="display:flex;align-items:center;flex-shrink:0;">
+        <img src="assets/kea_word_logo.svg" alt="Kea" style="height:30px;width:auto;display:block;">
+      </a>
+
+      <nav class="nav-desktop">
+        <a class="nav-link" href="#product" style="font-size:15px;font-weight:600;color:#444;">Product</a>
+        <a class="nav-link" href="#features" style="font-size:15px;font-weight:600;color:#444;">Features</a>
+        <a class="nav-link" href="#how" style="font-size:15px;font-weight:600;color:#444;">Pricing</a>
+        <a class="nav-link" href="#demo" style="font-size:15px;font-weight:600;color:#444;">Demo</a>
+        <a class="btn-cta btn-cta-nudge" href="#demo" style="display:inline-flex;align-items:center;background:var(--kea-cta-bg);color:#fff;font-size:15px;font-weight:700;padding:11px 22px;border-radius:var(--kea-radius);box-shadow:0 2px 6px var(--kea-cta-shadow);">Book a demo</a>
+      </nav>
+
+      <label class="nav-toggle" for="nav-check" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </label>
+    </div>
+
+    <div class="nav-mobile">
+      <a href="#product" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;border-bottom:1px solid #f3f1ec;">Product</a>
+      <a href="#features" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;border-bottom:1px solid #f3f1ec;">Features</a>
+      <a href="#how" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;border-bottom:1px solid #f3f1ec;">Pricing</a>
+      <a href="#demo" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;">Demo</a>
+      <a href="#demo" style="margin-top:10px;text-align:center;background:var(--kea-cta-bg);color:#fff;font-size:16px;font-weight:700;padding:14px 22px;border-radius:var(--kea-radius);">Book a demo</a>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section id="top" style="scroll-margin-top:80px;background:radial-gradient(1100px 540px at 78% -8%, #f4f7ee 0%, rgba(244,247,238,0) 60%), #ffffff;">
+    <div id="product" style="scroll-margin-top:80px;max-width:1180px;margin:0 auto;padding:clamp(48px,7vw,86px) 28px clamp(54px,7vw,90px);display:flex;flex-wrap:wrap;align-items:center;gap:clamp(36px,5vw,64px);">
+
+      <div style="flex:1 1 420px;min-width:300px;">
+        <div style="display:inline-flex;align-items:center;gap:9px;background:var(--kea-pill-bg);color:var(--kea-pill-fg);font-size:13px;font-weight:700;letter-spacing:.02em;padding:7px 14px;border-radius:999px;margin-bottom:24px;">
+          <span style="width:7px;height:7px;border-radius:50%;background:#e95423;display:inline-block;"></span>
+          PROCESS-MINING ANALYTICS
+        </div>
+        <h1 style="margin:0 0 22px;font-size:clamp(34px,5.2vw,60px);line-height:1.06;letter-spacing:-0.025em;font-weight:800;color:#2c2c2c;">
+          Your data knows where it’s losing money. <span style="color:#5c7d33;">Kea finds it.</span>
+        </h1>
+        <p style="margin:0 0 34px;font-size:clamp(16px,1.5vw,19px);line-height:1.6;color:#555;max-width:520px;">
+          Kea turns your raw event logs into a map of how work <em style="font-style:normal;color:#333;font-weight:600;">actually</em> flows — so you can see the bottlenecks, rework, and delays quietly draining your operation.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;">
+          <a class="btn-cta btn-cta-lift" href="#demo" style="display:inline-flex;align-items:center;gap:9px;background:var(--kea-cta-bg);color:#fff;font-size:16px;font-weight:700;padding:15px 28px;border-radius:var(--kea-radius);box-shadow:0 4px 14px var(--kea-cta-shadow);">
+            Book a demo
+            <span style="font-size:18px;line-height:1;">→</span>
+          </a>
+          <a class="btn-ghost" href="#features" style="display:inline-flex;align-items:center;gap:8px;color:#5c7d33;font-size:16px;font-weight:700;padding:15px 22px;border-radius:var(--kea-radius);border:1.5px solid #cdd9b8;">
+            See how it works
+          </a>
+        </div>
+        <div style="margin-top:30px;display:flex;flex-wrap:wrap;gap:22px 30px;font-size:13.5px;color:#888;font-weight:600;">
+          <span style="display:flex;align-items:center;gap:8px;"><span style="color:#5c7d33;">✓</span> Works from your existing event logs</span>
+          <span style="display:flex;align-items:center;gap:8px;"><span style="color:#5c7d33;">✓</span> No process model required</span>
+        </div>
+      </div>
+
+      <!-- Hero process-flow visual -->
+      <div style="flex:1 1 440px;min-width:320px;position:relative;">
+        <div style="position:relative;background:#fff;border:1px solid #ecebe5;border-radius:16px;box-shadow:0 14px 40px rgba(58,70,30,.10);padding:22px 22px 18px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <span style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:#3f86e0;letter-spacing:.06em;"><img src="assets/kea_k_logo.png" alt="Kea" style="height:18px;width:auto;display:block;">CLUSTERS · ORDER-TO-CASH</span>
+            <span style="font-size:12px;font-weight:700;color:#3f86e0;">12,480 cases</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin:2px 0 14px;font-size:11.5px;color:#999;">
+            <span><strong style="color:#666;">Showing:</strong> 3 of 42 clusters</span>
+            <span>Sort by: <strong style="color:#666;">size</strong></span>
+          </div>
+
+          <!-- cluster bands (recreated from the real Clusters panel) -->
+          <div role="img" aria-label="Cluster view: three groups of cases drawn as colored activity bands; the smallest cluster is selected, showing a rework loop through Manual review" style="display:flex;flex-direction:column;gap:18px;">
+            <div style="display:flex;align-items:flex-start;gap:14px;">
+              <span style="flex:0 0 86px;line-height:1.3;"><strong style="display:block;font-size:14px;color:#333;">C1</strong><span style="font-size:11.5px;color:#888;">7,712 (62%)</span></span>
+              <span style="display:flex;">
+                <span style="width:56px;height:88px;background:#17dd17;transform-origin:left;animation:keaband .5s ease-out both;text-align:center;padding-top:5px;font-size:11px;font-weight:700;color:#fff;">OR</span>
+                <span style="width:56px;height:88px;background:#ff00ff;transform-origin:left;animation:keaband .5s .07s ease-out both;text-align:center;padding-top:5px;font-size:11px;font-weight:700;color:#fff;">CC</span>
+                <span style="width:56px;height:88px;background:#1e90ff;transform-origin:left;animation:keaband .5s .14s ease-out both;text-align:center;padding-top:5px;font-size:11px;font-weight:700;color:#fff;">AP</span>
+                <span style="width:56px;height:88px;background:#ff8c00;transform-origin:left;animation:keaband .5s .21s ease-out both;text-align:center;padding-top:5px;font-size:11px;font-weight:700;color:#fff;">SH</span>
+                <span style="width:56px;height:88px;background:#8fbc8f;transform-origin:left;animation:keaband .5s .28s ease-out both;text-align:center;padding-top:5px;font-size:11px;font-weight:700;color:#fff;">IN</span>
+                <span style="width:56px;height:88px;background:#5f2da0;transform-origin:left;animation:keaband .5s .35s ease-out both;text-align:center;padding-top:5px;font-size:11px;font-weight:700;color:#fff;">PAY</span>
+              </span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:14px;">
+              <span style="flex:0 0 86px;line-height:1.3;"><strong style="display:block;font-size:14px;color:#333;">C2</strong><span style="font-size:11.5px;color:#888;">3,492 (28%)</span></span>
+              <span style="display:flex;">
+                <span style="width:56px;height:60px;background:#17dd17;transform-origin:left;animation:keaband .5s .1s ease-out both;text-align:center;padding-top:5px;font-size:11px;font-weight:700;color:#fff;">OR</span>
+                <span style="width:56px;height:60px;background:#ff00ff;transform-origin:left;animation:keaband .5s .17s ease-out both;text-align:center;padding-top:5px;font-size:11px;font-weight:700;color:#fff;">CC</span>
+                <span style="width:56px;height:60px;background:#ff8c00;transform-origin:left;animation:keaband .5s .24s ease-out both;text-align:center;padding-top:5px;font-size:11px;font-weight:700;color:#fff;">SH</span>
+                <span style="width:56px;height:60px;background:#8fbc8f;transform-origin:left;animation:keaband .5s .31s ease-out both;text-align:center;padding-top:5px;font-size:11px;font-weight:700;color:#fff;">IN</span>
+                <span style="width:56px;height:60px;background:#5f2da0;transform-origin:left;animation:keaband .5s .38s ease-out both;text-align:center;padding-top:5px;font-size:11px;font-weight:700;color:#fff;">PAY</span>
+              </span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:14px;">
+              <span style="flex:0 0 86px;line-height:1.3;"><strong style="display:block;font-size:14px;color:#333;">C3</strong><span style="font-size:11.5px;color:#c24518;font-weight:700;">1,276 (10%)</span></span>
+              <span style="display:flex;border:2px solid #e95423;border-radius:3px;animation:keaflash 2.2s ease-in-out infinite;animation-play-state:var(--kea-play);">
+                <span style="width:54px;height:40px;background:#17dd17;transform-origin:left;animation:keaband .5s .15s ease-out both;text-align:center;padding-top:4px;font-size:11px;font-weight:700;color:#fff;">OR</span>
+                <span style="width:54px;height:40px;background:#ff00ff;transform-origin:left;animation:keaband .5s .22s ease-out both;text-align:center;padding-top:4px;font-size:11px;font-weight:700;color:#fff;">CC</span>
+                <span style="width:54px;height:40px;background:#2fd6e8;transform-origin:left;animation:keaband .5s .29s ease-out both;text-align:center;padding-top:4px;font-size:11px;font-weight:700;color:#0e4a52;">MR</span>
+                <span style="width:54px;height:40px;background:#ff00ff;transform-origin:left;animation:keaband .5s .36s ease-out both;text-align:center;padding-top:4px;font-size:11px;font-weight:700;color:#fff;">CC</span>
+                <span style="width:54px;height:40px;background:#1e90ff;transform-origin:left;animation:keaband .5s .43s ease-out both;text-align:center;padding-top:4px;font-size:11px;font-weight:700;color:#fff;">AP</span>
+                <span style="width:54px;height:40px;background:#ff8c00;transform-origin:left;animation:keaband .5s .5s ease-out both;text-align:center;padding-top:4px;font-size:11px;font-weight:700;color:#fff;">SH</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- floating metric badge -->
+          <div style="margin:16px 0 0 auto;width:fit-content;background:#fff;border:1px solid #f3d4c8;border-radius:11px;box-shadow:0 8px 22px rgba(233,84,35,.18);padding:11px 14px;display:flex;align-items:center;gap:11px;animation:keafloat 4s ease-in-out infinite;animation-play-state:var(--kea-play);">
+            <span style="width:34px;height:34px;border-radius:8px;background:#fde3da;display:flex;align-items:center;justify-content:center;font-size:17px;">⚠</span>
+            <div style="line-height:1.2;">
+              <div style="font-size:17px;font-weight:800;color:#d4471c;">+3.1 d per case</div>
+              <div style="font-size:11.5px;font-weight:600;color:#999;">10% of cases loop through Manual review</div>
+            </div>
+          </div>
+
+          <!-- activity legend -->
+          <div style="margin-top:18px;display:flex;flex-wrap:wrap;gap:7px 16px;border-top:1px solid #f1f0ea;padding-top:12px;font-size:11.5px;font-weight:600;color:#777;">
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#17dd17;"></span>OR Order received</span>
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#ff00ff;"></span>CC Credit check</span>
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#2fd6e8;"></span>MR Manual review</span>
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#1e90ff;"></span>AP Approve</span>
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#ff8c00;"></span>SH Ship</span>
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#8fbc8f;"></span>IN Invoice</span>
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:2px;background:#5f2da0;"></span>PAY Payment</span>
+          </div>
+          <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;font-size:11.5px;">
+            <span style="color:#28a745;font-weight:600;">Data loaded successfully</span>
+            <span style="color:#999;">12,480 cases · 231 variants</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ PROBLEM STRIP ============ -->
+  <section style="background:#eef2e6;border-top:1px solid #e3e9d6;border-bottom:1px solid #e3e9d6;">
+    <div style="max-width:1180px;margin:0 auto;padding:clamp(40px,5vw,60px) 28px;">
+      <p style="margin:0 0 30px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;text-align:center;">WHY OPERATIONS LEAK</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:clamp(24px,3vw,44px);">
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <span style="font-size:30px;font-weight:800;color:#c3d2a4;line-height:1;">01</span>
+          <p style="margin:0;font-size:clamp(18px,1.8vw,21px);font-weight:700;line-height:1.4;color:#33401f;">Work doesn’t flow the way the process doc says.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <span style="font-size:30px;font-weight:800;color:#c3d2a4;line-height:1;">02</span>
+          <p style="margin:0;font-size:clamp(18px,1.8vw,21px);font-weight:700;line-height:1.4;color:#33401f;">The expensive rework is the part nobody looks at.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <span style="font-size:30px;font-weight:800;color:#c3d2a4;line-height:1;">03</span>
+          <p style="margin:0;font-size:clamp(18px,1.8vw,21px);font-weight:700;line-height:1.4;color:#33401f;">You can’t fix a bottleneck you can’t see.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES ============ -->
+  <section id="features" style="scroll-margin-top:80px;background:#f8f9f5;">
+    <div style="max-width:1180px;margin:0 auto;padding:clamp(56px,7vw,90px) 28px;">
+      <div style="max-width:620px;margin-bottom:clamp(34px,4vw,52px);">
+        <p style="margin:0 0 14px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;">WHAT KEA DOES</p>
+        <h2 style="margin:0 0 16px;font-size:clamp(28px,3.6vw,42px);line-height:1.12;letter-spacing:-0.02em;font-weight:800;color:#2c2c2c;">See the real shape of your operation.</h2>
+        <p style="margin:0;font-size:17px;line-height:1.6;color:#666;">Four ways Kea turns a pile of timestamps into decisions you can act on this quarter.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(244px,1fr));gap:22px;">
+        <!-- card 1 -->
+        <div class="feature-card" style="background:#fff;border:1px solid #ecebe4;border-radius:var(--kea-card-radius);padding:28px 26px;box-shadow:0 2px 6px rgba(0,0,0,.04);">
+          <div style="width:48px;height:48px;border-radius:11px;background:#ebf0e0;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5c7d33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.4"></circle><circle cx="19" cy="6" r="2.4"></circle><circle cx="12" cy="18" r="2.4"></circle><path d="M7.2 6.6 L16.8 6.6 M6 8 L11 16 M18 8 L13 16"></path></svg>
+          </div>
+          <h3 style="margin:0 0 10px;font-size:19px;font-weight:700;color:#2c2c2c;">Discover the real process</h3>
+          <p style="margin:0;font-size:15px;line-height:1.6;color:#666;">See how cases actually flow through your business — not the idealized diagram in the handbook.</p>
+        </div>
+        <!-- card 2 -->
+        <div class="feature-card" style="background:#fff;border:1px solid #ecebe4;border-radius:var(--kea-card-radius);padding:28px 26px;box-shadow:0 2px 6px rgba(0,0,0,.04);">
+          <div style="width:48px;height:48px;border-radius:11px;background:#ebf0e0;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5c7d33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="3"></circle><circle cx="17" cy="8" r="2.2"></circle><circle cx="9" cy="17" r="2.2"></circle><circle cx="17" cy="16" r="3"></circle></svg>
+          </div>
+          <h3 style="margin:0 0 10px;font-size:19px;font-weight:700;color:#2c2c2c;">Cluster similar cases</h3>
+          <p style="margin:0;font-size:15px;line-height:1.6;color:#666;">Group thousands of cases by pattern, then tune the granularity to surface the variants that matter.</p>
+        </div>
+        <!-- card 3 -->
+        <div class="feature-card" style="background:#fff;border:1px solid #ecebe4;border-radius:var(--kea-card-radius);padding:28px 26px;box-shadow:0 2px 6px rgba(0,0,0,.04);">
+          <div style="width:48px;height:48px;border-radius:11px;background:#ebf0e0;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5c7d33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7 L12 12 L15.5 14"></path></svg>
+          </div>
+          <h3 style="margin:0 0 10px;font-size:19px;font-weight:700;color:#2c2c2c;">Find where time goes</h3>
+          <p style="margin:0;font-size:15px;line-height:1.6;color:#666;">Duration and gap analysis pinpoint the slow steps — and the waiting time piling up between activities.</p>
+        </div>
+        <!-- card 4 -->
+        <div class="feature-card" style="background:#fff;border:1px solid #ecebe4;border-radius:var(--kea-card-radius);padding:28px 26px;box-shadow:0 2px 6px rgba(0,0,0,.04);">
+          <div style="width:48px;height:48px;border-radius:11px;background:#fde3da;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e95423" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L13.6 8.4 L19 10 L13.6 11.6 L12 17 L10.4 11.6 L5 10 L10.4 8.4 Z"></path><path d="M18 16 L18.8 18.2 L21 19 L18.8 19.8 L18 22 L17.2 19.8 L15 19 L17.2 18.2 Z"></path></svg>
+          </div>
+          <h3 style="margin:0 0 10px;font-size:19px;font-weight:700;color:#2c2c2c;">AI explains the clusters</h3>
+          <p style="margin:0;font-size:15px;line-height:1.6;color:#666;">Plain-language summaries of what each group of cases has in common — no chart-reading required.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section id="how" style="scroll-margin-top:80px;background:#fff;">
+    <div style="max-width:1180px;margin:0 auto;padding:clamp(56px,7vw,90px) 28px;">
+      <div style="max-width:620px;margin-bottom:clamp(34px,4vw,52px);">
+        <p style="margin:0 0 14px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;">HOW IT WORKS</p>
+        <h2 style="margin:0;font-size:clamp(28px,3.6vw,42px);line-height:1.12;letter-spacing:-0.02em;font-weight:800;color:#2c2c2c;">From event log to action in three steps.</h2>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;">
+        <div style="position:relative;border:1px solid #ecebe4;border-radius:var(--kea-card-radius);padding:30px 28px;background:#fbfcf9;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;background:#5c7d33;color:#fff;font-size:18px;font-weight:800;margin-bottom:20px;">1</span>
+          <h3 style="margin:0 0 10px;font-size:20px;font-weight:700;color:#2c2c2c;">Load your event log</h3>
+          <p style="margin:0;font-size:15px;line-height:1.6;color:#666;">Point Kea at the timestamps you already collect — case ID, activity, time. No new instrumentation.</p>
+        </div>
+        <div style="position:relative;border:1px solid #ecebe4;border-radius:var(--kea-card-radius);padding:30px 28px;background:#fbfcf9;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;background:#5c7d33;color:#fff;font-size:18px;font-weight:800;margin-bottom:20px;">2</span>
+          <h3 style="margin:0 0 10px;font-size:20px;font-weight:700;color:#2c2c2c;">Kea maps and clusters the flow</h3>
+          <p style="margin:0;font-size:15px;line-height:1.6;color:#666;">It reconstructs the real process, groups cases by pattern, and measures where the time and rework pile up.</p>
+        </div>
+        <div style="position:relative;border:1px solid #f3d4c8;border-radius:var(--kea-card-radius);padding:30px 28px;background:#fff7f3;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;background:#e95423;color:#fff;font-size:18px;font-weight:800;margin-bottom:20px;">3</span>
+          <h3 style="margin:0 0 10px;font-size:20px;font-weight:700;color:#2c2c2c;">Act on the bottlenecks</h3>
+          <p style="margin:0;font-size:15px;line-height:1.6;color:#666;">Take the highest-cost patterns to your team with the evidence — and fix what’s actually draining money.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SOCIAL PROOF ============ -->
+  <!-- PLACEHOLDER: customer quote, avatar, and logo strip — replace before publishing -->
+  <section id="proof" style="scroll-margin-top:80px;background:#f9f9f7;border-top:1px solid #eeede7;border-bottom:1px solid #eeede7;">
+    <div style="max-width:980px;margin:0 auto;padding:clamp(48px,6vw,76px) 28px;text-align:center;">
+      <blockquote style="margin:0 0 36px;font-size:clamp(20px,2.6vw,30px);line-height:1.4;font-weight:600;letter-spacing:-0.01em;color:#33401f;">
+        “<span style="background:linear-gradient(transparent 62%, #dbe9fb 62%);">Placeholder customer quote</span> — a sentence about the bottleneck Kea surfaced and what it was worth to fix it.”
+      </blockquote>
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:44px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#e3e6dd;"></div>
+        <div style="text-align:left;">
+          <div style="font-size:14px;font-weight:700;color:#333;">Name Placeholder</div>
+          <div style="font-size:13px;color:#999;">Title · Company</div>
+        </div>
+      </div>
+      <p style="margin:0 0 22px;font-size:12.5px;font-weight:700;letter-spacing:.08em;color:#3f86e0;">TRUSTED BY OPERATIONS TEAMS AT</p>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 34px;">
+        <div style="width:118px;height:34px;border-radius:7px;background:#e7e8e1;"></div>
+        <div style="width:118px;height:34px;border-radius:7px;background:#e7e8e1;"></div>
+        <div style="width:118px;height:34px;border-radius:7px;background:#e7e8e1;"></div>
+        <div style="width:118px;height:34px;border-radius:7px;background:#e7e8e1;"></div>
+        <div style="width:118px;height:34px;border-radius:7px;background:#e7e8e1;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CLOSING CTA ============ -->
+  <section id="demo" style="scroll-margin-top:80px;background:radial-gradient(900px 500px at 85% 15%, #4e6b2b 0%, #3e5621 55%, #33491c 100%);">
+    <div style="max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 28px;text-align:center;">
+      <h2 style="margin:0 auto 18px;max-width:760px;font-size:clamp(30px,4.4vw,52px);line-height:1.1;letter-spacing:-0.025em;font-weight:800;color:#fff;">
+        Your operation is leaking money somewhere. <span style="color:#f6c89f;">Find out where.</span>
+      </h2>
+      <p style="margin:0 auto 36px;max-width:540px;font-size:clamp(16px,1.6vw,19px);line-height:1.6;color:#d6e3c1;">
+        Book a 30-minute demo and we’ll map a sample of your real cases — you’ll see your first bottleneck on the call.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center;">
+        <a class="btn-cta btn-cta-lift" href="#demo" style="display:inline-flex;align-items:center;gap:9px;background:#e95423;color:#fff;font-size:17px;font-weight:700;padding:16px 32px;border-radius:var(--kea-radius);box-shadow:0 8px 22px rgba(233,84,35,.4);">Book a demo <span style="font-size:18px;line-height:1;">→</span></a>
+        <a class="btn-ghost-light" href="#features" style="display:inline-flex;align-items:center;color:#fff;font-size:17px;font-weight:700;padding:16px 26px;border-radius:var(--kea-radius);border:1.5px solid rgba(255,255,255,.4);">See how it works</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer style="background:#2b2b29;color:#cfcfca;">
+    <div style="max-width:1180px;margin:0 auto;padding:clamp(44px,5vw,64px) 28px 30px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:36px;margin-bottom:44px;">
+        <div style="max-width:300px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <img src="assets/kea_parrot.svg" alt="" style="height:38px;width:auto;display:block;">
+            <span style="font-size:21px;font-weight:800;color:#fff;letter-spacing:-0.01em;">Kea</span>
+          </div>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9a9a93;">Process-mining analytics that show you where work actually flows — and where it leaks.</p>
+        </div>
+        <div>
+          <h4 style="margin:0 0 16px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;">PRODUCT</h4>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+            <li><a class="footer-link" href="#product" style="font-size:14px;color:#b6b6b0;">Overview</a></li>
+            <li><a class="footer-link" href="#features" style="font-size:14px;color:#b6b6b0;">Features</a></li>
+            <li><a class="footer-link" href="#how" style="font-size:14px;color:#b6b6b0;">How it works</a></li>
+            <!-- PLACEHOLDER: Pricing has no page yet — points at #how -->
+            <li><a class="footer-link" href="#how" style="font-size:14px;color:#b6b6b0;">Pricing</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="margin:0 0 16px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;">COMPANY</h4>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+            <li><a class="footer-link" href="#" style="font-size:14px;color:#b6b6b0;">About</a></li>
+            <li><a class="footer-link" href="#" style="font-size:14px;color:#b6b6b0;">Careers</a></li>
+            <li><a class="footer-link" href="#" style="font-size:14px;color:#b6b6b0;">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="margin:0 0 16px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;">GET STARTED</h4>
+          <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#9a9a93;">See your first bottleneck on the call.</p>
+          <a class="btn-cta" href="#demo" style="display:inline-flex;align-items:center;background:var(--kea-cta-bg);color:#fff;font-size:14px;font-weight:700;padding:11px 20px;border-radius:var(--kea-radius);">Book a demo</a>
+        </div>
+      </div>
+      <div style="border-top:1px solid #41413d;padding-top:22px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;">
+        <span style="font-size:13px;color:#86867f;">© 2026 Kea. All rights reserved.</span>
+        <div style="display:flex;gap:22px;">
+          <a class="footer-legal-link" href="#" style="font-size:13px;color:#86867f;">Privacy</a>
+          <a class="footer-legal-link" href="#" style="font-size:13px;color:#86867f;">Terms</a>
+          <a class="footer-legal-link" href="#" style="font-size:13px;color:#86867f;">Security</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
