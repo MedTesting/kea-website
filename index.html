@@ -158,8 +158,30 @@
         </div>
       </div>
 
-      <!-- Hero app window: Directly-Follows Graph (recreated from the real DFG panel) -->
-      <div style="margin-top:clamp(40px,5vw,64px);position:relative;border:1px solid #d9dbd4;border-radius:10px;box-shadow:0 20px 55px rgba(40,50,20,.15);overflow:hidden;background:#fff;">
+      <!-- Hero app window: the 63.5 s product demo (video/kea-demo-v3.*). Click to play: poster + native controls, nothing preloaded beyond metadata. -->
+      <div id="watch" style="scroll-margin-top:96px;margin-top:clamp(40px,5vw,64px);">
+        <p style="margin:0 0 12px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;">SEE IT IN A MINUTE <span style="font-weight:600;letter-spacing:0;color:#888;">&nbsp;·&nbsp; 150,370 traffic fines, 13 years, one finding</span></p>
+        <div style="border:1px solid #d9dbd4;border-radius:10px;box-shadow:0 20px 55px rgba(40,50,20,.15);overflow:hidden;background:#0c0f08;">
+          <video controls preload="metadata" playsinline poster="video/kea-demo-v3-poster.jpg" style="display:block;width:100%;height:auto;aspect-ratio:16/9;">
+            <source src="video/kea-demo-v3.mp4" type="video/mp4">
+            <source src="video/kea-demo-v3.webm" type="video/webm">
+          </video>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ THE MAP: Directly-Follows Graph (recreated from the real DFG panel) ============ -->
+  <section id="map" style="scroll-margin-top:80px;background:#f8f9f5;border-top:1px solid #eeede7;">
+    <div style="max-width:1180px;margin:0 auto;padding:clamp(48px,6vw,76px) 28px clamp(54px,7vw,88px);">
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 48px;margin-bottom:clamp(22px,3vw,32px);">
+        <div style="max-width:560px;">
+          <p style="margin:0 0 14px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;">THE MAP</p>
+          <h2 style="margin:0;font-size:clamp(28px,3.6vw,42px);line-height:1.12;letter-spacing:-0.02em;font-weight:800;color:#2c2c2c;">Every path, every repeat, every wait — drawn from the log.</h2>
+        </div>
+        <p style="margin:0;flex:0 1 420px;font-size:16px;line-height:1.6;color:#666;">A different log this time: 12,480 orders through order-to-cash, the same one the walkthrough below uses. Kea drew this from three columns. The orange loop is the rework it found.</p>
+      </div>
+      <div style="position:relative;border:1px solid #d9dbd4;border-radius:10px;box-shadow:0 20px 55px rgba(40,50,20,.15);overflow:hidden;background:#fff;">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 18px;border-bottom:2px solid #5c7d33;background:#f0f1f3;">
           <span style="font-size:13.5px;font-weight:700;color:#333;">Directly-Follows Graph</span>
           <span style="display:flex;gap:6px;">
@@ -245,26 +267,6 @@
           <span style="color:#28a745;font-weight:600;">Viewing DFG for entire dataset</span>
           <span style="color:#999;">12,480 cases · 231 variants · 7 activities</span>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ WATCH THE DEMO ============ -->
-  <!-- The 63.5 s product demo (video/kea-demo-v3.*). Click to play: poster + native controls, nothing preloaded beyond metadata. -->
-  <section id="watch" style="scroll-margin-top:80px;background:#f8f9f5;border-top:1px solid #eeede7;">
-    <div style="max-width:1180px;margin:0 auto;padding:clamp(48px,6vw,76px) 28px clamp(54px,7vw,88px);">
-      <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 48px;margin-bottom:clamp(22px,3vw,32px);">
-        <div style="max-width:560px;">
-          <p style="margin:0 0 14px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;">SEE IT IN A MINUTE</p>
-          <h2 style="margin:0;font-size:clamp(28px,3.6vw,42px);line-height:1.12;letter-spacing:-0.02em;font-weight:800;color:#2c2c2c;">One event log. One finding. Sixty seconds.</h2>
-        </div>
-        <p style="margin:0;flex:0 1 420px;font-size:16px;line-height:1.6;color:#666;">150,370 traffic fines over 13 years. Watch Kea group the cases that behave alike, single out the 37.7% that are never paid, and show where they stall.</p>
-      </div>
-      <div style="border:1px solid #d9dbd4;border-radius:10px;box-shadow:0 20px 55px rgba(40,50,20,.15);overflow:hidden;background:#0c0f08;">
-        <video controls preload="metadata" playsinline poster="video/kea-demo-v3-poster.jpg" style="display:block;width:100%;height:auto;aspect-ratio:16/9;">
-          <source src="video/kea-demo-v3.mp4" type="video/mp4">
-          <source src="video/kea-demo-v3.webm" type="video/webm">
-        </video>
       </div>
     </div>
   </section>
