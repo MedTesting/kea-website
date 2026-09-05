@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kea pricing and licensing</title>
+  <meta name="description" content="How Kea is licensed: a signed licence file per machine, verified offline. Start with a demo, then get a quote.">
+  <link rel="icon" type="image/png" href="assets/kea_k_logo.png">
+</head>
+<body>
+
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+
+
+<div style="background:#ffffff;color:#333;">
+
+  <!-- ============ HEADER ============ -->
+  <header style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid #eceae5;">
+    <input type="checkbox" id="nav-check">
+    <div style="max-width:1180px;margin:0 auto;padding:0 28px;height:74px;display:flex;align-items:center;justify-content:space-between;gap:20px;">
+      <a href="index.html" style="display:flex;align-items:center;flex-shrink:0;">
+        <img src="assets/kea_word_logo.svg" alt="Kea" style="height:30px;width:auto;display:block;">
+      </a>
+      <nav class="nav-desktop">
+        <a class="nav-link" href="index.html#how" style="font-size:15px;font-weight:600;">How it works</a>
+        <a class="nav-link" href="pricing.html" style="font-size:15px;font-weight:600;">Pricing</a>
+        <a class="nav-link" href="about.html" style="font-size:15px;font-weight:600;">About</a>
+        <a class="btn-cta btn-cta-nudge" href="demo.html" style="display:inline-flex;align-items:center;background:var(--kea-cta-bg);color:#fff;font-size:15px;font-weight:700;padding:11px 22px;border-radius:var(--kea-radius);box-shadow:0 2px 6px var(--kea-cta-shadow);">Book a demo</a>
+      </nav>
+      <label class="nav-toggle" for="nav-check" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </label>
+    </div>
+    <div class="nav-mobile">
+      <a href="index.html#how" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;border-bottom:1px solid #f3f1ec;">How it works</a>
+      <a href="pricing.html" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;border-bottom:1px solid #f3f1ec;">Pricing</a>
+      <a href="about.html" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;">About</a>
+      <a href="demo.html" style="margin-top:10px;text-align:center;background:var(--kea-cta-bg);color:#fff;font-size:16px;font-weight:700;padding:14px 22px;border-radius:var(--kea-radius);">Book a demo</a>
+    </div>
+  </header>
+
+  <!-- ============ PAGE HEAD ============ -->
+  <section class="page-head">
+    <div class="wrap">
+      <h1>Pricing.</h1>
+      <p class="lede">Kea is sold as a licence for a desktop application. We do not publish a price list yet. This page explains what a licence is and how to get a quote.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap two-col" style="padding-top:clamp(36px,4.5vw,56px);padding-bottom:clamp(36px,4.5vw,56px);">
+      <div>
+        <h2 class="h2">How a licence works</h2>
+      </div>
+      <div class="prose">
+        <p><strong>One licence, one machine.</strong> A licence is a small signed file. You paste it into the app’s activation screen and Kea is unlocked on that machine.</p>
+        <p><strong>Checked offline.</strong> No activation server, no account, no request to us. A licence can carry an expiry date or none.</p>
+        <p><strong>Nothing is metered.</strong> There is no per-case, per-event or per-log counting, and no seat check against a server, because the app never talks to one. How much data you analyse is your business.</p>
+        <p><strong>If a licence expires</strong>, your imported logs stay where they are, untouched, until a new licence is in place.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#f8f9f5;border-top:1px solid #eeede7;">
+    <div class="wrap two-col" style="padding-top:clamp(36px,4.5vw,56px);padding-bottom:clamp(36px,4.5vw,56px);">
+      <div>
+        <h2 class="h2">How to get one</h2>
+      </div>
+      <div class="prose">
+        <p><strong>Start with the demo.</strong> Thirty minutes on one of your logs, or a public one. That tells both of us whether Kea fits the question you have. <a href="demo.html">Book it here.</a></p>
+        <p><strong>Then a quote.</strong> Tell us how many machines and people need the app, and for how long, and we send a figure. Licences are issued per machine, so the count is simply the number of computers Kea will run on.</p>
+        <p><strong>Installers</strong> for macOS (Apple silicon and Intel) and Windows come with the licence.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="quote" style="scroll-margin-top:80px;border-top:1px solid #eeede7;">
+    <div class="wrap two-col two-col-form" style="padding-top:clamp(44px,5.5vw,72px);padding-bottom:clamp(52px,6.5vw,84px);">
+      <div>
+        <h2 class="h2">Request a quote</h2>
+        <p class="p">Three fields and we reply by email. If you have not had the demo yet, say so and we will suggest doing that first.</p>
+      </div>
+      <!-- PLACEHOLDER: this form is deliberately not connected (static GitHub Pages, no form service yet). The button is type="button" and does nothing. To wire it up: add action/method, make the button type="submit", and update legal.html#privacy. -->
+      <form class="form">
+        <div class="field">
+          <label for="q-name">Your name</label>
+          <input id="q-name" name="name" type="text" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="q-email">Work email</label>
+          <input id="q-email" name="email" type="email" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="q-company">Organisation</label>
+          <input id="q-company" name="company" type="text" autocomplete="organization">
+        </div>
+        <div class="field">
+          <label for="q-machines">How many machines?</label>
+          <select id="q-machines" name="machines">
+            <option>1</option>
+            <option>2 to 5</option>
+            <option>6 to 20</option>
+            <option>More than 20</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="q-message">Anything else</label>
+          <textarea id="q-message" name="message" rows="4" placeholder="How long you need it for, whether you have had the demo, anything we should know."></textarea>
+        </div>
+        <button class="btn-cta btn-cta-lift" type="button">Request a quote</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER (identical on every page under site/; edit all copies together) ============ -->
+  <footer style="background:#2b2b29;color:#cfcfca;">
+    <div style="max-width:1180px;margin:0 auto;padding:clamp(44px,5vw,64px) 28px 30px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:36px;margin-bottom:44px;">
+        <div style="max-width:300px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <img src="assets/kea_parrot.svg" alt="" style="height:38px;width:auto;display:block;">
+            <span style="font-size:21px;font-weight:800;color:#fff;letter-spacing:-0.01em;">Kea</span>
+          </div>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9a9a93;">Process-mining analytics for the event logs you already have. A desktop app; your data stays with you.</p>
+        </div>
+        <div>
+          <h4 style="margin:0 0 16px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;">PRODUCT</h4>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+            <li><a class="footer-link" href="index.html" style="font-size:14px;">Overview</a></li>
+            <li><a class="footer-link" href="index.html#how" style="font-size:14px;">How it works</a></li>
+            <li><a class="footer-link" href="pricing.html" style="font-size:14px;">Pricing</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="margin:0 0 16px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;">RESOURCES</h4>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+            <li><a class="footer-link" href="security.html" style="font-size:14px;">Data handling</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="margin:0 0 16px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;">COMPANY</h4>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+            <li><a class="footer-link" href="about.html" style="font-size:14px;">About</a></li>
+            <li><a class="footer-link" href="demo.html" style="font-size:14px;">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="margin:0 0 16px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;">GET STARTED</h4>
+          <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#9a9a93;">Thirty minutes, your log or a public one.</p>
+          <a class="btn-cta" href="demo.html" style="display:inline-flex;align-items:center;background:var(--kea-cta-bg);color:#fff;font-size:14px;font-weight:700;padding:11px 20px;border-radius:var(--kea-radius);">Book a demo</a>
+        </div>
+      </div>
+      <div style="border-top:1px solid #41413d;padding-top:22px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;">
+        <span style="font-size:13px;color:#86867f;">© 2026 Kea. All rights reserved.</span>
+        <div style="display:flex;gap:22px;">
+          <a class="footer-legal-link" href="legal.html#privacy" style="font-size:13px;">Privacy</a>
+          <a class="footer-legal-link" href="legal.html#terms" style="font-size:13px;">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

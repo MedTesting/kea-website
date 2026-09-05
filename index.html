@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kea — Process-mining analytics</title>
-  <meta name="description" content="Kea reads the event log your systems already keep and draws the process as it actually ran — every path, every repeat, every wait — so you can see where the money is going.">
+  <title>Kea: process mining for the event logs you already have</title>
+  <meta name="description" content="Kea is a desktop app that reads the event log your systems already keep and draws the process as it actually ran, so you can see where the money is going. Nothing leaves your machine.">
   <link rel="icon" type="image/png" href="assets/kea_k_logo.png">
 </head>
 <body>
@@ -13,100 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <style>
-    /* ---- theme knobs (same surface as option 1: accent=Balanced, corners=Rounded, motion=Lively) ---- */
-    :root {
-      --kea-cta-bg: #e95423;
-      --kea-cta-bg-hover: #d4471c;
-      --kea-cta-shadow: rgba(233,84,35,.3);
-      --kea-pill-bg: #ebf0e0;
-      --kea-pill-fg: #3e5621;
-      --kea-radius: 6px;
-      --kea-card-radius: 14px;
-      --kea-play: running;
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { margin: 0; font-family: "Open Sans", sans-serif; color: #333; background: #ffffff; -webkit-font-smoothing: antialiased; }
-    a { text-decoration: none; color: inherit; }
-    a:hover { color: inherit; }
-    img { max-width: 100%; }
-
-    /* ---- one-shot entrance animations (unaffected by --kea-play) ---- */
-    @keyframes keaband { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-    @keyframes keadraw { to { stroke-dashoffset: 0; } }
-    @keyframes keapop { from { transform: scale(0); } }
-    @keyframes keafade { from { opacity: 0; } }
-    @keyframes kearow { from { opacity: 0; transform: translateY(8px); } }
-    @keyframes keachip { from { transform: scaleX(0); } }
-    @keyframes kearise { from { transform: scaleY(0); } }
-    /* ---- loops (carry animation-play-state: var(--kea-play)) ---- */
-    @keyframes keaflow { to { stroke-dashoffset: -30; } }
-    @keyframes keapulse { 0%,100% { opacity: .35; transform: scale(1); } 50% { opacity: 0; transform: scale(1.6); } }
-    @keyframes keaflash { 0%,100% { box-shadow: 0 0 0 0 rgba(233,84,35,.4); } 50% { box-shadow: 0 0 0 9px rgba(233,84,35,0); } }
-    @keyframes keafloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-    .kea-loop { animation-play-state: var(--kea-play); }
-
-    /* ---- hover states ---- */
-    .btn-cta { transition: background .2s, transform .2s; }
-    .btn-cta:hover { background: var(--kea-cta-bg-hover); color: #fff; }
-    .btn-cta-lift:hover { transform: translateY(-2px); }
-    .btn-cta-nudge:hover { transform: translateY(-1px); }
-    .btn-ghost { transition: background .2s, border-color .2s; }
-    .btn-ghost:hover { background: #ebf0e0; border-color: #5c7d33; color: #5c7d33; }
-    .btn-ghost-light { transition: background .2s, border-color .2s; }
-    .btn-ghost-light:hover { background: rgba(255,255,255,.1); border-color: #fff; color: #fff; }
-    .nav-link { color: #444; transition: color .2s; }
-    .nav-link:hover { color: #3f86e0; }
-    .footer-link { color: #b6b6b0; transition: color .2s; }
-    .footer-link:hover { color: #a4cd78; }
-    .footer-legal-link { color: #86867f; transition: color .2s; }
-    .footer-legal-link:hover { color: #cfcfca; }
-
-    /* ---- responsive nav (breakpoint 880px, CSS-only hamburger) ---- */
-    .nav-desktop { display: flex; align-items: center; gap: 34px; }
-    .nav-toggle { display: none; }
-    .nav-mobile { display: none; border-top: 1px solid #eceae5; background: #fff; padding: 14px 28px 22px; flex-direction: column; gap: 4px; }
-    #nav-check { display: none; }
-    #nav-check:checked ~ .nav-mobile { display: flex; }
-
-    /* ---- fixed-geometry drawings scroll rather than squash ---- */
-    .dfg-scroll { overflow-x: auto; }
-    .dfg-scroll > svg { min-width: 760px; }
-    .dfg-badge { position: absolute; right: 16px; top: 16px; }
-    .cases-scroll { overflow-x: auto; }
-    .cases-scroll > .cases-rows { min-width: 620px; }
-    .bands-scroll { overflow-x: auto; }
-    .bands-scroll > div { min-width: 440px; }
-
-    /* ---- story chapters: copy rail + panel ---- */
-    .chapter { display: grid; grid-template-columns: minmax(0, 330px) minmax(0, 1fr); gap: 56px; align-items: start; }
-    .chapter-copy { position: sticky; top: 98px; }
-    .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 36px; }
-
-    @media (max-width: 879px) {
-      .nav-desktop { display: none; }
-      .nav-toggle {
-        display: inline-flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px;
-        width: 44px; height: 44px; background: transparent; border: 1px solid #e3e1db; border-radius: 8px; cursor: pointer;
-      }
-      .nav-toggle span { display: block; width: 20px; height: 2px; background: #3e5621; border-radius: 2px; }
-      .dfg-badge { position: static; margin: 0 16px 16px; }
-      .chapter { grid-template-columns: minmax(0, 1fr); gap: 26px; }
-      .chapter-copy { position: static; }
-      .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    @media (max-width: 560px) {
-      .facts { grid-template-columns: minmax(0, 1fr); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      :root { --kea-play: paused; }
-      html { scroll-behavior: auto; }
-      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
-    }
-  </style>
+  <link rel="stylesheet" href="css/site.css">
 
 
 <div style="background:#ffffff;color:#333;">
@@ -115,28 +22,24 @@
   <header style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid #eceae5;">
     <input type="checkbox" id="nav-check">
     <div style="max-width:1180px;margin:0 auto;padding:0 28px;height:74px;display:flex;align-items:center;justify-content:space-between;gap:20px;">
-      <a href="#top" style="display:flex;align-items:center;flex-shrink:0;">
+      <a href="index.html" style="display:flex;align-items:center;flex-shrink:0;">
         <img src="assets/kea_word_logo.svg" alt="Kea" style="height:30px;width:auto;display:block;">
       </a>
       <nav class="nav-desktop">
-        <a class="nav-link" href="#product" style="font-size:15px;font-weight:600;">Product</a>
-        <a class="nav-link" href="#how" style="font-size:15px;font-weight:600;">How it works</a>
-        <!-- PLACEHOLDER: Pricing has no page yet — points at #how -->
-        <a class="nav-link" href="#how" style="font-size:15px;font-weight:600;">Pricing</a>
-        <a class="nav-link" href="#watch" style="font-size:15px;font-weight:600;">Demo</a>
-        <a class="btn-cta btn-cta-nudge" href="#demo" style="display:inline-flex;align-items:center;background:var(--kea-cta-bg);color:#fff;font-size:15px;font-weight:700;padding:11px 22px;border-radius:var(--kea-radius);box-shadow:0 2px 6px var(--kea-cta-shadow);">Book a demo</a>
+        <a class="nav-link" href="index.html#how" style="font-size:15px;font-weight:600;">How it works</a>
+        <a class="nav-link" href="pricing.html" style="font-size:15px;font-weight:600;">Pricing</a>
+        <a class="nav-link" href="about.html" style="font-size:15px;font-weight:600;">About</a>
+        <a class="btn-cta btn-cta-nudge" href="demo.html" style="display:inline-flex;align-items:center;background:var(--kea-cta-bg);color:#fff;font-size:15px;font-weight:700;padding:11px 22px;border-radius:var(--kea-radius);box-shadow:0 2px 6px var(--kea-cta-shadow);">Book a demo</a>
       </nav>
       <label class="nav-toggle" for="nav-check" aria-label="Menu">
         <span></span><span></span><span></span>
       </label>
     </div>
     <div class="nav-mobile">
-      <a href="#product" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;border-bottom:1px solid #f3f1ec;">Product</a>
-      <a href="#how" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;border-bottom:1px solid #f3f1ec;">How it works</a>
-      <!-- PLACEHOLDER: Pricing has no page yet — points at #how -->
-      <a href="#how" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;border-bottom:1px solid #f3f1ec;">Pricing</a>
-      <a href="#watch" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;">Demo</a>
-      <a href="#demo" style="margin-top:10px;text-align:center;background:var(--kea-cta-bg);color:#fff;font-size:16px;font-weight:700;padding:14px 22px;border-radius:var(--kea-radius);">Book a demo</a>
+      <a href="index.html#how" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;border-bottom:1px solid #f3f1ec;">How it works</a>
+      <a href="pricing.html" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;border-bottom:1px solid #f3f1ec;">Pricing</a>
+      <a href="about.html" style="font-size:16px;font-weight:600;color:#333;padding:12px 4px;">About</a>
+      <a href="demo.html" style="margin-top:10px;text-align:center;background:var(--kea-cta-bg);color:#fff;font-size:16px;font-weight:700;padding:14px 22px;border-radius:var(--kea-radius);">Book a demo</a>
     </div>
   </header>
 
@@ -144,23 +47,18 @@
   <section id="top" style="scroll-margin-top:80px;background:radial-gradient(1100px 540px at 78% -8%, #f4f7ee 0%, rgba(244,247,238,0) 60%), #ffffff;">
     <div id="product" style="scroll-margin-top:80px;max-width:1180px;margin:0 auto;padding:clamp(48px,7vw,84px) 28px clamp(54px,7vw,88px);">
       <div style="max-width:860px;">
-        <span style="display:inline-flex;align-items:center;gap:9px;background:var(--kea-pill-bg);color:var(--kea-pill-fg);font-size:13px;font-weight:700;letter-spacing:.02em;padding:7px 14px;border-radius:999px;margin-bottom:24px;"><span style="width:7px;height:7px;border-radius:50%;background:#e95423;display:inline-block;"></span>PROCESS-MINING ANALYTICS</span>
         <h1 style="margin:0 0 22px;font-size:clamp(34px,5.2vw,60px);line-height:1.06;letter-spacing:-0.025em;font-weight:800;color:#2c2c2c;">Your data knows you’re losing money. <span style="color:#5c7d33;">Kea shows you where.</span></h1>
-        <p style="margin:0 0 34px;font-size:clamp(16px,1.5vw,19px);line-height:1.6;color:#555;max-width:600px;">Kea reads the event log your systems already keep and draws the process as it actually ran: every path, every repeat, every wait. Load a CSV, get the map, click anything to see the cases behind it.</p>
+        <p style="margin:0 0 34px;font-size:clamp(16px,1.5vw,19px);line-height:1.6;color:#555;max-width:600px;">Kea reads the event log your systems already keep and draws the process as it actually ran, repeats and waits included. Load a CSV, get the map, click anything to see the cases behind it.</p>
         <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;">
-          <a class="btn-cta btn-cta-lift" href="#demo" style="display:inline-flex;align-items:center;gap:9px;background:var(--kea-cta-bg);color:#fff;font-size:16px;font-weight:700;padding:15px 28px;border-radius:var(--kea-radius);box-shadow:0 4px 14px var(--kea-cta-shadow);">Book a demo <span style="font-size:18px;line-height:1;">→</span></a>
+          <a class="btn-cta btn-cta-lift" href="demo.html" style="display:inline-flex;align-items:center;gap:9px;background:var(--kea-cta-bg);color:#fff;font-size:16px;font-weight:700;padding:15px 28px;border-radius:var(--kea-radius);box-shadow:0 4px 14px var(--kea-cta-shadow);">Book a demo <span style="font-size:18px;line-height:1;">→</span></a>
           <a class="btn-ghost" href="#how" style="display:inline-flex;align-items:center;gap:8px;color:#5c7d33;font-size:16px;font-weight:700;padding:15px 22px;border-radius:var(--kea-radius);border:1.5px solid #cdd9b8;">See how an analysis runs</a>
         </div>
-        <div style="margin-top:30px;display:flex;flex-wrap:wrap;gap:12px 30px;font-size:13.5px;color:#888;font-weight:600;">
-          <span><span style="color:#5c7d33;">✓</span> CSV or XES event logs</span>
-          <span><span style="color:#5c7d33;">✓</span> Runs on your own computer, nothing uploaded</span>
-          <span><span style="color:#5c7d33;">✓</span> No process model required</span>
-        </div>
+        <p style="margin:28px 0 0;font-size:14px;line-height:1.6;color:#777;max-width:600px;">A desktop app for macOS and Windows. It reads CSV or XES event logs and needs no process model. Nothing leaves your machine.</p>
       </div>
 
       <!-- Hero app window: the 63.5 s product demo (video/kea-demo-v7.*). Click to play: poster + native controls, nothing preloaded beyond metadata. -->
       <div id="watch" style="scroll-margin-top:96px;margin-top:clamp(40px,5vw,64px);">
-        <p style="margin:0 0 12px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;">SEE IT IN A MINUTE <span style="font-weight:600;letter-spacing:0;color:#888;">&nbsp;·&nbsp; 150,370 traffic fines, 13 years, one finding</span></p>
+        <p style="margin:0 0 12px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;">SEE IT IN A MINUTE <span style="font-weight:600;letter-spacing:0;color:#888;">&nbsp;·&nbsp; A public log: 150,370 traffic fines over 13 years</span></p>
         <div style="border:1px solid #d9dbd4;border-radius:10px;box-shadow:0 20px 55px rgba(40,50,20,.15);overflow:hidden;background:#0c0f08;">
           <video controls preload="metadata" playsinline poster="video/kea-demo-v7-poster.jpg" style="display:block;width:100%;height:auto;aspect-ratio:16/9;">
             <source src="video/kea-demo-v7.mp4" type="video/mp4">
@@ -177,9 +75,9 @@
       <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 48px;margin-bottom:clamp(22px,3vw,32px);">
         <div style="max-width:560px;">
           <p style="margin:0 0 14px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;">THE MAP</p>
-          <h2 style="margin:0;font-size:clamp(28px,3.6vw,42px);line-height:1.12;letter-spacing:-0.02em;font-weight:800;color:#2c2c2c;">Every path, every repeat, every wait — drawn from the log.</h2>
+          <h2 style="margin:0;font-size:clamp(28px,3.6vw,42px);line-height:1.12;letter-spacing:-0.02em;font-weight:800;color:#2c2c2c;">The map is drawn from the log, not from the process document.</h2>
         </div>
-        <p style="margin:0;flex:0 1 420px;font-size:16px;line-height:1.6;color:#666;">A different log this time: 12,480 orders through order-to-cash, the same one the walkthrough below uses. Kea drew this from three columns. The orange loop is the rework it found.</p>
+        <p style="margin:0;flex:0 1 420px;font-size:16px;line-height:1.6;color:#666;">The video used a real public log. The rest of this page follows a smaller order-to-cash log we made up, 12,480 orders, so the numbers stay easy to follow. Kea drew this map from three of its columns. The orange loop is the rework.</p>
       </div>
       <div style="position:relative;border:1px solid #d9dbd4;border-radius:10px;box-shadow:0 20px 55px rgba(40,50,20,.15);overflow:hidden;background:#fff;">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 18px;border-bottom:2px solid #5c7d33;background:#f0f1f3;">
@@ -256,7 +154,7 @@
             <text x="360" y="30" text-anchor="middle" font-family="Open Sans, sans-serif" font-size="11" font-weight="600" fill="#777">Manual review</text>
           </svg>
           </div>
-          <div class="kea-loop dfg-badge" style="width:fit-content;background:#fff;border:1px solid #f3d4c8;border-radius:10px;box-shadow:0 8px 22px rgba(233,84,35,.18);padding:10px 14px;animation:keafloat 4s ease-in-out infinite;">
+          <div class="kea-loop dfg-badge" style="width:fit-content;background:#fff;border:1px solid #f3d4c8;border-radius:10px;box-shadow:0 8px 22px rgba(233,84,35,.18);padding:10px 14px;">
             <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:#d4471c;"><span style="width:8px;height:8px;border-radius:50%;background:#e95423;"></span>Rework loop found</div>
             <div style="margin-top:2px;font-size:11.5px;font-weight:600;color:#999;">CC ↔ MR · 1,276 cases · +3.1 d each</div>
           </div>
@@ -269,11 +167,33 @@
     </div>
   </section>
 
-  <!-- ============ ONE-LINE STRIP ============ -->
-  <section style="background:#eef2e6;border-top:1px solid #e3e9d6;border-bottom:1px solid #e3e9d6;">
-    <div style="max-width:1180px;margin:0 auto;padding:clamp(36px,4.5vw,54px) 28px;display:flex;flex-wrap:wrap;align-items:baseline;gap:18px 48px;">
-      <p style="margin:0;flex:1 1 520px;font-size:clamp(19px,2vw,24px);font-weight:700;line-height:1.4;color:#33401f;letter-spacing:-0.01em;">The process document describes how work is supposed to move. The event log records how it moved. Kea works from the second one.</p>
-      <p style="margin:0;flex:0 1 300px;font-size:14.5px;line-height:1.6;color:#5f6b48;">Case ID, activity, timestamp. If your system writes those three columns, you already have everything Kea needs.</p>
+  <!-- ============ THE INPUT: a slice of the (illustrative) order-to-cash log ============ -->
+  <section id="input" style="scroll-margin-top:80px;background:#eef2e6;border-top:1px solid #e3e9d6;border-bottom:1px solid #e3e9d6;">
+    <div style="max-width:1180px;margin:0 auto;padding:clamp(44px,5.5vw,68px) 28px;display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:36px 56px;align-items:center;" class="input-grid">
+      <div>
+        <h2 style="margin:0 0 14px;font-size:clamp(24px,2.6vw,32px);line-height:1.15;letter-spacing:-0.02em;font-weight:800;color:#33401f;">This is the whole input.</h2>
+        <p style="margin:0 0 12px;font-size:15.5px;line-height:1.6;color:#4f5a3a;">An event log is a table with one row per event. Kea needs three of its columns: which case the row belongs to, what happened, and when.</p>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:#6a755a;">Every other column becomes an attribute you can chart and filter by. Order A2052 is the one you will meet again in the walkthrough below.</p>
+      </div>
+      <div class="log-scroll">
+        <table class="log-excerpt" aria-label="Six rows of an order-to-cash event log; the case ID, activity and timestamp columns are highlighted">
+          <thead>
+            <tr class="log-roles"><th class="req">Case ID</th><th class="req">Activity</th><th class="req">Timestamp</th><th colspan="3">Attributes</th></tr>
+            <tr><th class="req">order_id</th><th class="req">activity</th><th class="req">timestamp</th><th>amount_eur</th><th>channel</th><th>region</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="req">A2052</td><td class="req">Order received</td><td class="req">2025-03-04 09:12</td><td>196.40</td><td>web</td><td>North</td></tr>
+            <tr><td class="req">A2052</td><td class="req">Credit check</td><td class="req">2025-03-04 11:47</td><td>196.40</td><td>web</td><td>North</td></tr>
+            <tr><td class="req">A2052</td><td class="req">Manual review</td><td class="req">2025-03-06 15:02</td><td>196.40</td><td>web</td><td>North</td></tr>
+            <tr><td class="req">A2052</td><td class="req">Credit check</td><td class="req">2025-03-10 08:30</td><td>196.40</td><td>web</td><td>North</td></tr>
+            <tr><td class="req">A2052</td><td class="req">Manual review</td><td class="req">2025-03-12 16:40</td><td>196.40</td><td>web</td><td>North</td></tr>
+            <tr><td class="req">A2052</td><td class="req">Credit check</td><td class="req">2025-03-17 09:15</td><td>196.40</td><td>web</td><td>North</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td colspan="6">… and about 73,000 more rows for the other 12,479 orders.</td></tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
   </section>
 
@@ -283,14 +203,12 @@
       <div style="max-width:680px;margin-bottom:clamp(40px,5vw,64px);">
         <p style="margin:0 0 14px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;">HOW AN ANALYSIS RUNS</p>
         <h2 style="margin:0 0 16px;font-size:clamp(28px,3.6vw,42px);line-height:1.12;letter-spacing:-0.02em;font-weight:800;color:#2c2c2c;">From 12,480 orders to the one loop that costs three days.</h2>
-        <p style="margin:0;font-size:17px;line-height:1.6;color:#666;">The same order-to-cash log as above, in the three panels you would open first. Each one is recreated from a real view in the app, and clicking in any of them filters the others.</p>
+        <p style="margin:0;font-size:17px;line-height:1.6;color:#666;">The same order-to-cash log, in the three panels you would open first. Each is redrawn from a real view in the app, and a click in any of them filters the others.</p>
       </div>
 
       <!-- ---- Chapter 01: Clusters ---- -->
       <div class="chapter" style="padding:clamp(28px,4vw,48px) 0;border-top:1px solid #ecebe4;">
         <div class="chapter-copy">
-          <p style="margin:0 0 14px;font-size:44px;font-weight:800;line-height:1;color:#c3d2a4;letter-spacing:-0.03em;">01</p>
-          <p style="margin:0 0 10px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;">CLUSTERS</p>
           <h3 style="margin:0 0 14px;font-size:clamp(22px,2.2vw,27px);line-height:1.2;letter-spacing:-0.015em;font-weight:700;color:#2c2c2c;">Group the cases by how they actually ran.</h3>
           <p style="margin:0 0 14px;font-size:15.5px;line-height:1.65;color:#555;">Kea clusters cases with similar event patterns and draws each cluster as bands: one column per step, width by frequency. C1 and C2 are the two ways an order is meant to go. C3 is 1,276 orders that went through Credit check at least twice.</p>
           <p style="margin:0;font-size:13.5px;line-height:1.6;color:#888;">Drag K to split or merge clusters. The recommended K is computed when the log is imported.</p>
@@ -375,8 +293,6 @@
       <!-- ---- Chapter 02: Cases ---- -->
       <div class="chapter" style="padding:clamp(28px,4vw,48px) 0;border-top:1px solid #ecebe4;">
         <div class="chapter-copy">
-          <p style="margin:0 0 14px;font-size:44px;font-weight:800;line-height:1;color:#c3d2a4;letter-spacing:-0.03em;">02</p>
-          <p style="margin:0 0 10px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;">CASES</p>
           <h3 style="margin:0 0 14px;font-size:clamp(22px,2.2vw,27px);line-height:1.2;letter-spacing:-0.015em;font-weight:700;color:#2c2c2c;">Open the cases behind the pattern.</h3>
           <p style="margin:0 0 14px;font-size:15.5px;line-height:1.65;color:#555;">A cluster is not a summary. It is a list of real orders with real timestamps. Click C3 and the Cases panel shows them on a timeline: A2052 went through Manual review twice and took 6.4 days longer than the median.</p>
           <p style="margin:0;font-size:13.5px;line-height:1.6;color:#888;">Selections are transient; the next click replaces the last. Pin one as a filter when you want it to stick.</p>
@@ -521,8 +437,6 @@
       <!-- ---- Chapter 03: Attributes ---- -->
       <div class="chapter" style="padding:clamp(28px,4vw,48px) 0;border-top:1px solid #ecebe4;border-bottom:1px solid #ecebe4;">
         <div class="chapter-copy">
-          <p style="margin:0 0 14px;font-size:44px;font-weight:800;line-height:1;color:#c3d2a4;letter-spacing:-0.03em;">03</p>
-          <p style="margin:0 0 10px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;">ATTRIBUTES</p>
           <h3 style="margin:0 0 14px;font-size:clamp(22px,2.2vw,27px);line-height:1.2;letter-spacing:-0.015em;font-weight:700;color:#2c2c2c;">Find what the slow cases have in common.</h3>
           <p style="margin:0 0 14px;font-size:15.5px;line-height:1.65;color:#555;">Attribute histograms show how a value is spread across the selection. Here the orders stuck in Manual review sit between €180 and €240, right on the threshold that sends them to a person. That is a rule to change, not a team to push harder.</p>
           <p style="margin:0;font-size:13.5px;line-height:1.6;color:#888;">The Comparison panel ranks which attributes separate one group of cases from another, by effect size, with p-values. Pure statistics, no AI involved.</p>
@@ -600,100 +514,129 @@
     </div>
   </section>
 
-  <!-- ============ WHAT ELSE TO KNOW ============ -->
-  <section id="facts" style="scroll-margin-top:80px;background:#f8f9f5;border-top:1px solid #eeede7;">
+  <!-- ============ SPECS ============ -->
+  <section id="specs" style="scroll-margin-top:80px;background:#f8f9f5;border-top:1px solid #eeede7;">
     <div style="max-width:1180px;margin:0 auto;padding:clamp(56px,7vw,90px) 28px;">
-      <div style="max-width:620px;margin-bottom:clamp(34px,4vw,52px);">
-        <p style="margin:0 0 14px;font-size:13px;font-weight:800;letter-spacing:.1em;color:#5c7d33;">WHAT ELSE TO KNOW</p>
-        <h2 style="margin:0;font-size:clamp(28px,3.6vw,42px);line-height:1.12;letter-spacing:-0.02em;font-weight:800;color:#2c2c2c;">Built for data you are not allowed to upload.</h2>
-      </div>
-      <div class="facts">
-        <div style="border-top:2px solid #5c7d33;padding-top:18px;">
-          <h3 style="margin:0 0 10px;font-size:17px;font-weight:700;color:#2c2c2c;">Runs on your computer</h3>
-          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#666;">A desktop app for macOS and Windows. Your data never leaves your machine, and the app does not need an internet connection.</p>
+      <div class="specs-grid">
+        <div>
+          <h2 style="margin:0 0 16px;font-size:clamp(28px,3.6vw,42px);line-height:1.12;letter-spacing:-0.02em;font-weight:800;color:#2c2c2c;">Built for data you are not allowed to upload.</h2>
+          <p style="margin:0;font-size:16px;line-height:1.6;color:#666;">Kea is a desktop application. There is no account, no tenant and no upload step, because the logs that matter most are usually the ones you cannot send anywhere.</p>
+          <p style="margin:18px 0 0;font-size:14.5px;line-height:1.6;color:#777;">More detail on what the app does and does not send is on the <a href="security.html" style="color:#5c7d33;font-weight:700;text-decoration:underline;text-underline-offset:3px;">data handling page</a>.</p>
         </div>
-        <div style="border-top:2px solid #5c7d33;padding-top:18px;">
-          <h3 style="margin:0 0 10px;font-size:17px;font-weight:700;color:#2c2c2c;">Your existing logs</h3>
-          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#666;">CSV or XES in, mapped in a four-step import. Logs with millions of events stream in without exhausting memory.</p>
-        </div>
-        <div style="border-top:2px solid #5c7d33;padding-top:18px;">
-          <h3 style="margin:0 0 10px;font-size:17px;font-weight:700;color:#2c2c2c;">Every step on record</h3>
-          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#666;">Each action lands in a History tree you can step back through. Export it as a file and a colleague sees exactly the path you took.</p>
-        </div>
-        <div style="border-top:2px solid #e95423;padding-top:18px;">
-          <h3 style="margin:0 0 10px;font-size:17px;font-weight:700;color:#2c2c2c;">AI, optional and local</h3>
-          <p style="margin:0;font-size:14.5px;line-height:1.6;color:#666;">Cluster explanations and plain-English filtering run on a local Ollama model, or not at all. The core analysis needs none of it.</p>
-        </div>
+        <table class="specs" aria-label="Kea at a glance">
+          <tbody>
+            <tr><th>Runs on</th><td>macOS and Windows. A desktop app; nothing to host.</td></tr>
+            <tr><th>Reads</th><td>CSV or XES event logs. Three columns are required: case, activity, timestamp. The rest come along as attributes.</td></tr>
+            <tr><th>Network</th><td>Not required. Your log never leaves the machine.</td></tr>
+            <tr><th>AI features</th><td>Optional, and local. Without a local model the analysis is unchanged.</td></tr>
+            <tr><th>Exports</th><td>Any selection as XES or CSV, plus the analysis itself as a file a colleague can open.</td></tr>
+            <tr><th>Licence</th><td>Per machine, verified offline. No login.</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
 
-  <!-- ============ QUOTE ============ -->
-  <!-- PLACEHOLDER: customer quote and name — replace before publishing -->
-  <section id="proof" style="scroll-margin-top:80px;background:#fff;border-top:1px solid #eeede7;">
-    <div style="max-width:900px;margin:0 auto;padding:clamp(48px,6vw,76px) 28px;text-align:center;">
-      <blockquote style="margin:0 0 28px;font-size:clamp(20px,2.6vw,30px);line-height:1.4;font-weight:600;letter-spacing:-0.01em;color:#33401f;">“<span style="background:linear-gradient(transparent 62%, #dbe9fb 62%);">[CUSTOMER QUOTE]</span> — one sentence about the bottleneck Kea surfaced and what fixing it was worth.”</blockquote>
-      <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
-        <span style="width:44px;height:44px;border-radius:50%;background:#e3e6dd;display:block;"></span>
-        <div style="text-align:left;line-height:1.3;">
-          <div style="font-size:14px;font-weight:700;color:#333;">[NAME]</div>
-          <div style="font-size:13px;color:#999;">[Title · Company]</div>
+  <!-- ============ FAQ ============ -->
+  <section id="faq" style="scroll-margin-top:80px;background:#fff;border-top:1px solid #eeede7;">
+    <div style="max-width:1180px;margin:0 auto;padding:clamp(52px,6.5vw,84px) 28px;">
+      <div class="faq-grid">
+        <div>
+          <h2 style="margin:0 0 14px;font-size:clamp(26px,3.2vw,36px);line-height:1.15;letter-spacing:-0.02em;font-weight:800;color:#2c2c2c;">Questions people ask before a demo.</h2>
+          <p style="margin:0;font-size:15.5px;line-height:1.6;color:#666;">If yours is not here, <a href="demo.html" style="color:#5c7d33;font-weight:700;text-decoration:underline;text-underline-offset:3px;">ask it on the booking form</a> and we will answer before the call.</p>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>What does my log need to contain?</summary>
+            <p>Three columns: a case identifier, an activity name and a timestamp. Anything else in the file comes along as an attribute. CSV and XES are both accepted.</p>
+          </details>
+          <details>
+            <summary>Do I need a process model first?</summary>
+            <p>No. The map is drawn from the log.</p>
+          </details>
+          <details>
+            <summary>How large a log can it handle?</summary>
+            <p>Logs with millions of events. The public log in the video has 150,370 cases.</p>
+          </details>
+          <details>
+            <summary>Where does my data go?</summary>
+            <p>Nowhere. It stays on the machine that runs Kea, which does not need a network connection. <a href="security.html">What the app does and does not send.</a></p>
+          </details>
+          <details>
+            <summary>Do I need the AI features?</summary>
+            <p>No. They are optional and run on a local model if you install one. The analysis does not depend on them.</p>
+          </details>
+          <details>
+            <summary>Which computers does it run on?</summary>
+            <p>macOS and Windows. It is a desktop app, so there is nothing to host.</p>
+          </details>
+          <details>
+            <summary>How is it licensed?</summary>
+            <p>Per machine, verified offline. <a href="pricing.html">How licensing works.</a></p>
+          </details>
+          <details>
+            <summary>What happens on the demo call?</summary>
+            <p>Thirty minutes. You bring a sample of a log, or we use the public traffic-fines log from the video. We import it, draw the map and look at the first loop or wait together.</p>
+          </details>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ============ CLOSING CTA ============ -->
-  <section id="demo" style="scroll-margin-top:80px;background:radial-gradient(900px 500px at 85% 15%, #4e6b2b 0%, #3e5621 55%, #33491c 100%);">
+  <section id="book" style="scroll-margin-top:80px;background:radial-gradient(900px 500px at 85% 15%, #4e6b2b 0%, #3e5621 55%, #33491c 100%);">
     <div style="max-width:1180px;margin:0 auto;padding:clamp(56px,8vw,100px) 28px;text-align:center;">
-      <h2 style="margin:0 auto 18px;max-width:760px;font-size:clamp(30px,4.4vw,52px);line-height:1.1;letter-spacing:-0.025em;font-weight:800;color:#fff;">Bring one event log. <span style="color:#f6c89f;">Leave with the first bottleneck.</span></h2>
-      <p style="margin:0 auto 36px;max-width:560px;font-size:clamp(16px,1.6vw,19px);line-height:1.6;color:#d6e3c1;">Book a 30-minute demo. We load a sample of your cases into Kea and walk through the first finding with you on the call.</p>
+      <h2 style="margin:0 auto 18px;max-width:760px;font-size:clamp(30px,4.4vw,52px);line-height:1.1;letter-spacing:-0.025em;font-weight:800;color:#fff;">Bring a sample of your log <span style="color:#f6c89f;">to the call.</span></h2>
+      <p style="margin:0 auto 36px;max-width:560px;font-size:clamp(16px,1.6vw,19px);line-height:1.6;color:#d6e3c1;">In thirty minutes we import it into Kea, draw the map and look at the first loop or wait together. If you cannot share data yet, we use the public log from the video instead.</p>
       <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center;">
-        <a class="btn-cta btn-cta-lift" href="#demo" style="display:inline-flex;align-items:center;gap:9px;background:var(--kea-cta-bg);color:#fff;font-size:17px;font-weight:700;padding:16px 32px;border-radius:var(--kea-radius);box-shadow:0 8px 22px rgba(233,84,35,.4);">Book a demo <span style="font-size:18px;line-height:1;">→</span></a>
-        <a class="btn-ghost-light" href="#how" style="display:inline-flex;align-items:center;color:#fff;font-size:17px;font-weight:700;padding:16px 26px;border-radius:var(--kea-radius);border:1.5px solid rgba(255,255,255,.4);">See how an analysis runs</a>
+        <a class="btn-cta btn-cta-lift" href="demo.html" style="display:inline-flex;align-items:center;gap:9px;background:var(--kea-cta-bg);color:#fff;font-size:17px;font-weight:700;padding:16px 32px;border-radius:var(--kea-radius);box-shadow:0 8px 22px rgba(233,84,35,.4);">Book a demo <span style="font-size:18px;line-height:1;">→</span></a>
       </div>
     </div>
   </section>
 
-  <!-- ============ FOOTER ============ -->
+  <!-- ============ FOOTER (identical on every page under site/; edit all copies together) ============ -->
   <footer style="background:#2b2b29;color:#cfcfca;">
     <div style="max-width:1180px;margin:0 auto;padding:clamp(44px,5vw,64px) 28px 30px;">
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:36px;margin-bottom:44px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:36px;margin-bottom:44px;">
         <div style="max-width:300px;">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
             <img src="assets/kea_parrot.svg" alt="" style="height:38px;width:auto;display:block;">
             <span style="font-size:21px;font-weight:800;color:#fff;letter-spacing:-0.01em;">Kea</span>
           </div>
-          <p style="margin:0;font-size:14px;line-height:1.6;color:#9a9a93;">Process-mining analytics for the event logs you already have.</p>
+          <p style="margin:0;font-size:14px;line-height:1.6;color:#9a9a93;">Process-mining analytics for the event logs you already have. A desktop app; your data stays with you.</p>
         </div>
         <div>
           <h4 style="margin:0 0 16px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;">PRODUCT</h4>
           <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
-            <li><a class="footer-link" href="#product" style="font-size:14px;">Overview</a></li>
-            <li><a class="footer-link" href="#how" style="font-size:14px;">How it works</a></li>
-            <!-- PLACEHOLDER: Pricing has no page yet — points at #how -->
-            <li><a class="footer-link" href="#how" style="font-size:14px;">Pricing</a></li>
+            <li><a class="footer-link" href="index.html" style="font-size:14px;">Overview</a></li>
+            <li><a class="footer-link" href="index.html#how" style="font-size:14px;">How it works</a></li>
+            <li><a class="footer-link" href="pricing.html" style="font-size:14px;">Pricing</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="margin:0 0 16px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;">RESOURCES</h4>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+            <li><a class="footer-link" href="security.html" style="font-size:14px;">Data handling</a></li>
           </ul>
         </div>
         <div>
           <h4 style="margin:0 0 16px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;">COMPANY</h4>
           <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
-            <li><a class="footer-link" href="#" style="font-size:14px;">About</a></li>
-            <li><a class="footer-link" href="#" style="font-size:14px;">Contact</a></li>
+            <li><a class="footer-link" href="about.html" style="font-size:14px;">About</a></li>
+            <li><a class="footer-link" href="demo.html" style="font-size:14px;">Contact</a></li>
           </ul>
         </div>
         <div>
           <h4 style="margin:0 0 16px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;">GET STARTED</h4>
-          <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#9a9a93;">See your first bottleneck on the call.</p>
-          <a class="btn-cta" href="#demo" style="display:inline-flex;align-items:center;background:var(--kea-cta-bg);color:#fff;font-size:14px;font-weight:700;padding:11px 20px;border-radius:var(--kea-radius);">Book a demo</a>
+          <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#9a9a93;">Thirty minutes, your log or a public one.</p>
+          <a class="btn-cta" href="demo.html" style="display:inline-flex;align-items:center;background:var(--kea-cta-bg);color:#fff;font-size:14px;font-weight:700;padding:11px 20px;border-radius:var(--kea-radius);">Book a demo</a>
         </div>
       </div>
       <div style="border-top:1px solid #41413d;padding-top:22px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;">
         <span style="font-size:13px;color:#86867f;">© 2026 Kea. All rights reserved.</span>
         <div style="display:flex;gap:22px;">
-          <a class="footer-legal-link" href="#" style="font-size:13px;">Privacy</a>
-          <a class="footer-legal-link" href="#" style="font-size:13px;">Terms</a>
-          <a class="footer-legal-link" href="#" style="font-size:13px;">Security</a>
+          <a class="footer-legal-link" href="legal.html#privacy" style="font-size:13px;">Privacy</a>
+          <a class="footer-legal-link" href="legal.html#terms" style="font-size:13px;">Terms</a>
         </div>
       </div>
     </div>
